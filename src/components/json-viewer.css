@@ -1,0 +1,12 @@
+.json-viewer {
+  color: cadetblue;
+  margin-left: 200px;
+}
+
+.json-element {
+  padding-left: 15px;
+}
+
+.json-property > .json-element {
+  padding-left: 0;
+}
