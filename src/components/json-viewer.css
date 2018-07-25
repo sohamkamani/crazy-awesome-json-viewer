@@ -1,12 +1,33 @@
 .json-viewer {
+  display: flex;
+}
+
+.json-viewer__editor {
+  width: 400px;
   color: cadetblue;
   margin-left: 200px;
 }
 
 .json-element {
-  padding-left: 15px;
+  padding-left: 25px;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .json-property > .json-element {
   padding-left: 0;
+}
+
+.collapse-button {
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 0 8px;
+  padding: 0 5px;
+}
+
+.collapse-button::-moz-selection {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.collapse-button::selection {
+  background-color: rgba(0, 0, 0, 0);
 }

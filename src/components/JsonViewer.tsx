@@ -27,14 +27,14 @@ export default class JsonViewer extends React.Component {
   public render () {
     const state: any = this.state
     return (
-      <div>
-        <div className='editable json-viewer'>
+      <div className='json-viewer'>
+        <div className='editable json-viewer__editor'>
           Some <span className='tmp'>sample</span> text
         </div>
-        <p>Result</p>
-        <p>
+        <div className='json-viewer__view'>
+          <p>Result</p>
           <JSONView ast={state.ast} omitBeginning={false} />
-        </p>
+        </div>
       </div>
     )
   }
