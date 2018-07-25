@@ -1,10 +1,46 @@
 import * as React from 'react'
 import Collapsebutton from './CollapseButton'
 
-const JSONLiteral = ({ value, objectKey }) => (
+const vestigial = (str: string): JSX.Element => <span className='json-vestigial'>{str}</span>
+
+const wrapInQuotes = (objectKey: string): JSX.Element => (
+  <span>
+    <span className='json-vestigial'>"</span>
+    <span className='json-key'>{objectKey}</span>
+    <span className='json-vestigial'>"</span>
+  </span>
+)
+
+const wrapInQuotesIfString = (val) => (typeof val.value === 'string' ? wrapInQuotes(val.value) : val.raw)
+
+const key = (objectKey: string): JSX.Element | null =>
+  objectKey ? (
+    <span>
+      {wrapInQuotes(objectKey)}
+      <span className='json-vestigial'> : </span>
+    </span>
+  ) : null
+
+class Brackets {
+  op: JSX.Element
+  cl: JSX.Element
+}
+
+const brackets = (isArray: boolean): Brackets =>
+  isArray
+    ? {
+        op: vestigial('['),
+        cl: vestigial(']')
+      }
+    : {
+        op: vestigial('{'),
+        cl: vestigial('}')
+      }
+
+const JSONLiteral = ({ val, objectKey }) => (
   <div className='json-element'>
-    {objectKey ? `"${objectKey}" :` : null}
-    {value}
+    {key(objectKey)}
+    {wrapInQuotesIfString(val)}
   </div>
 )
 
@@ -32,17 +68,17 @@ class JSONObject extends React.Component<JSONStructure, JSONStructureState> {
     const { children, objectKey, isArray } = this.props
     const { collapsed } = this.state
     const collapseButton = <Collapsebutton collapsed={collapsed} onClick={this.collapse.bind(this)} />
-
+    const { op, cl } = brackets(isArray)
     return (
       <div className='json-element'>
-        {objectKey ? `"${objectKey}" : ` : null}
-        {isArray ? '[' : '{'}
+        {key(objectKey)}
+        {op}
         {collapseButton}
         {collapsed ? null : <br />}
         <div style={collapsed ? { display: 'none' } : {}}>
           {children.map((c) => <JSONView objectKey={isArray ? '' : c.key.value} ast={isArray ? c : c.value} />)}
         </div>
-        {isArray ? ']' : '}'}
+        {cl}
       </div>
     )
   }
@@ -58,7 +94,7 @@ const JSONView = ({ ast, omitBeginning, objectKey }) => {
     case 'Array':
       return <JSONObject objectKey={objectKey} children={ast.children} isArray />
     case 'Literal':
-      return <JSONLiteral objectKey={objectKey} value={ast.raw} />
+      return <JSONLiteral objectKey={objectKey} val={ast} />
     default:
       return <div>Later</div>
   }
