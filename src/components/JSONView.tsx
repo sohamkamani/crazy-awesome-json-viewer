@@ -1,21 +1,27 @@
 import * as React from 'react'
 import Collapsebutton from './CollapseButton'
 
+import './color-theme.css'
+
 const vestigial = (str: string): JSX.Element => <span className='json-vestigial'>{str}</span>
 
 const wrapInQuotes = (objectKey: string): JSX.Element => (
   <span>
     <span className='json-vestigial'>"</span>
-    <span className='json-key'>{objectKey}</span>
+    <span className='json-string'>{objectKey}</span>
     <span className='json-vestigial'>"</span>
   </span>
 )
 
-const wrapInQuotesIfString = (val) => (typeof val.value === 'string' ? wrapInQuotes(val.value) : val.raw)
+const wrapInQuotesIfString = (val) => {
+  if (typeof val.value === 'string') return wrapInQuotes(val.value)
+  if (typeof val.value === 'number') return <span className='json-number'>{val.raw}</span>
+  return <span className='json-literal'>{val.raw}</span>
+}
 
 const key = (objectKey: string): JSX.Element | null =>
   objectKey ? (
-    <span>
+    <span className='json-key'>
       {wrapInQuotes(objectKey)}
       <span className='json-vestigial'> : </span>
     </span>
@@ -26,28 +32,30 @@ class Brackets {
   cl: JSX.Element
 }
 
-const brackets = (isArray: boolean): Brackets =>
+const brackets = (isArray: boolean, comma: string): Brackets =>
   isArray
     ? {
         op: vestigial('['),
-        cl: vestigial(']')
+        cl: vestigial(']' + comma)
       }
     : {
         op: vestigial('{'),
-        cl: vestigial('}')
+        cl: vestigial('}' + comma)
       }
 
-const JSONLiteral = ({ val, objectKey }) => (
+const JSONLiteral = ({ val, objectKey, shouldShowComma }) => (
   <div className='json-element'>
     {key(objectKey)}
     {wrapInQuotesIfString(val)}
+    {shouldShowComma ? vestigial(',') : null}
   </div>
 )
 
 class JSONStructure {
   isArray: boolean
   objectKey: string
-  children: Array<any>
+  nodes: Array<any>
+  shouldShowComma: boolean
 }
 
 class JSONStructureState {
@@ -65,10 +73,10 @@ class JSONObject extends React.Component<JSONStructure, JSONStructureState> {
     this.setState({ collapsed: !this.state.collapsed })
   }
   public render () {
-    const { children, objectKey, isArray } = this.props
+    const { nodes, objectKey, isArray, shouldShowComma } = this.props
     const { collapsed } = this.state
     const collapseButton = <Collapsebutton collapsed={collapsed} onClick={this.collapse.bind(this)} />
-    const { op, cl } = brackets(isArray)
+    const { op, cl } = brackets(isArray, shouldShowComma ? ',' : '')
     return (
       <div className='json-element'>
         {key(objectKey)}
@@ -76,7 +84,14 @@ class JSONObject extends React.Component<JSONStructure, JSONStructureState> {
         {collapseButton}
         {collapsed ? null : <br />}
         <div style={collapsed ? { display: 'none' } : {}}>
-          {children.map((c) => <JSONView objectKey={isArray ? '' : c.key.value} ast={isArray ? c : c.value} />)}
+          {nodes.map((c, i) => (
+            <JSONView
+              key={i}
+              shouldShowComma={i < nodes.length - 1}
+              objectKey={isArray ? '' : c.key.value}
+              ast={isArray ? c : c.value}
+            />
+          ))}
         </div>
         {cl}
       </div>
@@ -84,19 +99,25 @@ class JSONObject extends React.Component<JSONStructure, JSONStructureState> {
   }
 }
 
-const JSONView = ({ ast, omitBeginning, objectKey }) => {
-  if (ast instanceof Error && ast.name === 'SyntaxError') {
-    return <div className='json-element'>{ast.message.split('\n').map((txt) => <div>{txt}</div>)}</div>
-  }
+const getAstView = (ast, objectKey, shouldShowComma) => {
   switch (ast.type) {
     case 'Object':
-      return <JSONObject objectKey={objectKey} children={ast.children} isArray={false} />
+      return <JSONObject shouldShowComma={shouldShowComma} objectKey={objectKey} nodes={ast.children} isArray={false} />
     case 'Array':
-      return <JSONObject objectKey={objectKey} children={ast.children} isArray />
+      return <JSONObject shouldShowComma={shouldShowComma} objectKey={objectKey} nodes={ast.children} isArray />
     case 'Literal':
-      return <JSONLiteral objectKey={objectKey} val={ast} />
+      return <JSONLiteral shouldShowComma={shouldShowComma} objectKey={objectKey} val={ast} />
     default:
       return <div>Later</div>
   }
+}
+
+const JSONView = ({ ast, objectKey, shouldShowComma }) => {
+  if (ast instanceof Error && ast.name === 'SyntaxError') {
+    return <div className='json-element'>{ast.message.split('\n').map((txt) => <div>{txt}</div>)}</div>
+  }
+
+  const astView = getAstView(ast, objectKey, shouldShowComma)
+  return <div>{astView}</div>
 }
 export default JSONView

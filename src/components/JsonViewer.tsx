@@ -1,4 +1,3 @@
-import * as MediumEditor from 'medium-editor'
 import * as React from 'react'
 import JSONView from './JSONView'
 
@@ -7,33 +6,34 @@ import formatJSON from '../lib/json-parser'
 import 'medium-editor/dist/css/medium-editor.css'
 import './json-viewer.css'
 
+const sampleJSON = `{
+  "title": "JSON viewer",
+  "sample array":[1,2,3,4],
+  "sample object": {
+    "embedded array" : ["hey"],
+    "key":"value",
+    "null":null
+  }
+}`
+
 export default class JsonViewer extends React.Component {
   public constructor (props) {
     super(props)
-    this.state = { ast: {} }
+    this.state = { rawInput: sampleJSON }
   }
 
-  public componentDidMount () {
-    const editor = new MediumEditor('.editable', {
-      toolbar: false
-    })
-    editor.subscribe('editableInput', (data) => {
-      console.log('text changed : ', data.target.innerText)
-      const ast = formatJSON(data.target.innerText)
-      this.setState({ ast })
-    })
-    console.log(editor)
+  onTextChange (e) {
+    this.setState({ rawInput: e.target.value })
   }
+
   public render () {
     const state: any = this.state
     return (
       <div className='json-viewer'>
-        <div className='editable json-viewer__editor'>
-          Some <span className='tmp'>sample</span> text
-        </div>
+        <textarea value={state.rawInput} onChange={this.onTextChange.bind(this)} />
         <div className='json-viewer__view'>
           <p>Result</p>
-          <JSONView ast={state.ast} omitBeginning={false} />
+          <JSONView ast={formatJSON(state.rawInput)} omitBeginning={false} />
         </div>
       </div>
     )
