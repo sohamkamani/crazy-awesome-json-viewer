@@ -30,9 +30,8 @@ export default class JsonViewer extends React.Component {
     const state: any = this.state
     return (
       <div className='json-viewer'>
-        <textarea value={state.rawInput} onChange={this.onTextChange.bind(this)} />
+        <textarea className='json-viewer__input' value={state.rawInput} onChange={this.onTextChange.bind(this)} />
         <div className='json-viewer__view'>
-          <p>Result</p>
           <JSONView ast={formatJSON(state.rawInput)} omitBeginning={false} />
         </div>
       </div>

@@ -3,9 +3,14 @@
 }
 
 .json-viewer__editor {
-  width: 400px;
+  flex: 1;
   color: cadetblue;
   margin-left: 200px;
+}
+
+.json-viewer__input {
+  resize: vertical;
+  width: 400px;
 }
 
 .json-element {

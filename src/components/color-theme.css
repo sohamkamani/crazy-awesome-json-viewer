@@ -1,19 +1,19 @@
-.json-vestigial {
+.json-vestigial--color {
   color: #b1b6c0;
 }
 
-.json-string {
+.json-string--color {
   color: #6874e8;
 }
 
-.json-number {
+.json-number--color {
   color: #392759;
 }
 
-.json-literal {
+.json-literal--color {
   color: #f7accf;
 }
 
-.json-key .json-string {
+.json-key .json-string--color {
   color: #7a5c61;
 }
