@@ -1,9 +1,7 @@
-import parse from 'json-to-ast'
-
 const formatJSON = (txt: string): Object => {
   let ast = {}
   try {
-    ast = parse(txt, { loc: false })
+    ast = JSON.parse(txt)
     return ast
   } catch (e) {
     return e

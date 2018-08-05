@@ -4,7 +4,6 @@ import Layout from 'antd/lib/layout'
 import { OptionsCtx } from './contexts'
 import JsonViewer from './components/JsonViewer'
 import Options, { AppOptions, defaultOptions } from './components/Options'
-import Tbl from './components/TableView'
 
 import 'antd/lib/layout/style/css'
 import './App.css'
@@ -40,7 +39,6 @@ class App extends React.Component<any, AppState> {
             <Layout>
               <Content>
                 <JsonViewer />
-                <Tbl />
               </Content>
             </Layout>
           </Layout>

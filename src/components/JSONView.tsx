@@ -1,14 +1,17 @@
 import * as React from 'react'
-import Collapsebutton from './CollapseButton'
+import Modal from 'antd/lib/modal'
+import { CollapseButton, TableButton } from './SideButtons'
 import { LevelCtx, OptionsCtx } from '../contexts'
 import { vestigial, wrapInQuotes, jsonNumber, literal, key } from '../lib/primitives'
+import { shouldShowTable, Tbl } from './TableView'
 
+import 'antd/lib/modal/style/css'
 import './color-theme.css'
 
 const wrapInQuotesIfString = (val) => {
-  if (typeof val.value === 'string') return wrapInQuotes(val.value)
-  if (typeof val.value === 'number') return jsonNumber(val.raw)
-  return literal(val.raw)
+  if (typeof val === 'string') return wrapInQuotes(val)
+  if (typeof val === 'number') return jsonNumber(String(val))
+  return literal(String(val))
 }
 
 class Brackets {
@@ -44,22 +47,36 @@ class JSONStructure {
 
 class JSONStructureState {
   collapsed: boolean
+  showTable: boolean
+  tableData: any[]
 }
 
 class JSONObject extends React.Component<JSONStructure, JSONStructureState> {
   public constructor (props) {
     super(props)
     this.state = {
-      collapsed: false
+      collapsed: false,
+      showTable: false,
+      tableData: []
     }
   }
   collapse () {
     this.setState({ collapsed: !this.state.collapsed })
   }
+  tableView (nodes) {
+    this.setState({ showTable: true, tableData: nodes })
+  }
+  hideTableView () {
+    this.setState({ showTable: false })
+  }
   public render () {
     const { nodes, objectKeyName, isArray, shouldShowComma } = this.props
     const { collapsed } = this.state
-    const collapseButton = <Collapsebutton collapsed={collapsed} onClick={this.collapse.bind(this)} />
+    const collapseButton = <CollapseButton collapsed={collapsed} onClick={this.collapse.bind(this)} />
+    const tableButton =
+      isArray && shouldShowTable(nodes) ? (
+        <TableButton collapsed={collapsed} onClick={() => this.tableView.bind(this)(nodes)} />
+      ) : null
     const { op, cl } = brackets(isArray, shouldShowComma ? ',' : '')
     return (
       <LevelCtx.Consumer>
@@ -68,19 +85,23 @@ class JSONObject extends React.Component<JSONStructure, JSONStructureState> {
             {key(objectKeyName)}
             {op}
             {collapseButton}
+            {tableButton}
             {collapsed ? null : <br />}
             <div style={collapsed ? { display: 'none' } : {}}>
-              {nodes.map((c, i) => (
+              {Object.keys(nodes).map((key, i) => (
                 <JSONView
                   key={i}
                   shouldShowComma={i < nodes.length - 1}
-                  objectKey={isArray ? '' : c.key.value}
-                  ast={isArray ? c : c.value}
+                  objectKey={isArray ? '' : key}
+                  ast={nodes[key]}
                   level={level + 1}
                 />
               ))}
             </div>
             {cl}
+            <Modal title='Table View' visible={this.state.showTable} onCancel={this.hideTableView.bind(this)}>
+              <Tbl data={this.state.tableData} />
+            </Modal>
           </div>
         )}
       </LevelCtx.Consumer>
@@ -89,25 +110,14 @@ class JSONObject extends React.Component<JSONStructure, JSONStructureState> {
 }
 
 const getAstView = ({ ast, objectKey, shouldShowComma }) => {
-  let isArray = true
-  switch (ast.type) {
-    case 'Object':
-      isArray = false
-    case 'Array':
-      if (isArray) console.log(ast)
-      return (
-        <JSONObject
-          shouldShowComma={shouldShowComma}
-          objectKeyName={objectKey}
-          nodes={ast.children}
-          isArray={isArray}
-        />
-      )
-    case 'Literal':
-      return <JSONLiteral shouldShowComma={shouldShowComma} objectKeyName={objectKey} val={ast} />
-    default:
-      return <div>Later</div>
+  if (typeof ast === 'object' && ast !== null) {
+    let isArray = false
+    if (ast instanceof Array) {
+      isArray = true
+    }
+    return <JSONObject shouldShowComma={shouldShowComma} objectKeyName={objectKey} nodes={ast} isArray={isArray} />
   }
+  return <JSONLiteral shouldShowComma={shouldShowComma} objectKeyName={objectKey} val={ast} />
 }
 
 const fontSizeMap = {
