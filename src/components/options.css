@@ -1,0 +1,18 @@
+.app-option {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.app-option > div {
+  margin: auto;
+}
+
+.app-option__label-out {
+  display: flex;
+  padding-bottom: 5px;
+}
+
+.app-option__label-in {
+  color: white;
+}

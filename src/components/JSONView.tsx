@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Collapsebutton from './CollapseButton'
-import { LevelCtx } from '../contexts'
+import { LevelCtx, OptionsCtx } from '../contexts'
 import { vestigial, wrapInQuotes, jsonNumber, literal, key } from '../lib/primitives'
 
 import './color-theme.css'
@@ -94,6 +94,7 @@ const getAstView = ({ ast, objectKey, shouldShowComma }) => {
     case 'Object':
       isArray = false
     case 'Array':
+      if (isArray) console.log(ast)
       return (
         <JSONObject
           shouldShowComma={shouldShowComma}
@@ -109,12 +110,26 @@ const getAstView = ({ ast, objectKey, shouldShowComma }) => {
   }
 }
 
+const fontSizeMap = {
+  small: '10px',
+  medium: '14px',
+  large: '18px'
+}
+
 const JSONView = ({ ast, objectKey, shouldShowComma, level = 0 }) => {
   if (ast instanceof Error && ast.name === 'SyntaxError') {
     return <pre className='json-element'>{ast.message}</pre>
   }
 
   const astView = getAstView({ ast, objectKey, shouldShowComma })
-  return <LevelCtx.Provider value={level}>{astView}</LevelCtx.Provider>
+  return (
+    <OptionsCtx.Consumer>
+      {(options) => (
+        <LevelCtx.Provider value={level}>
+          <div style={{ fontSize: fontSizeMap[options.textSize] }}>{astView}</div>
+        </LevelCtx.Provider>
+      )}
+    </OptionsCtx.Consumer>
+  )
 }
 export default JSONView

@@ -3,7 +3,9 @@ import JSONView from './JSONView'
 
 import formatJSON from '../lib/json-parser'
 
-import 'medium-editor/dist/css/medium-editor.css'
+import Input from 'antd/lib/input'
+
+import 'antd/lib/input/style/css'
 import './json-viewer.css'
 
 const sampleJSON = `{
@@ -30,7 +32,7 @@ export default class JsonViewer extends React.Component {
     const state: any = this.state
     return (
       <div className='json-viewer'>
-        <textarea className='json-viewer__input' value={state.rawInput} onChange={this.onTextChange.bind(this)} />
+        <Input.TextArea className='json-viewer__input' value={state.rawInput} onChange={this.onTextChange.bind(this)} />
         <div className='json-viewer__view'>
           <JSONView ast={formatJSON(state.rawInput)} omitBeginning={false} />
         </div>

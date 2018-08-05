@@ -1,21 +1,29 @@
-.json-viewer {
-  display: flex;
+.header {
+  height: 150px;
 }
 
-.json-viewer__editor {
-  flex: 1;
-  color: cadetblue;
-  margin-left: 200px;
+.json-viewer {
+  display: flex;
+  height: calc(100vh - 64px);
+  border-top: 1px solid gray;
 }
 
 .json-viewer__input {
-  resize: vertical;
-  width: 400px;
+  resize: none;
+  font-family: consolas, monospace;
+  border-top: none;
+  border-radius: 0;
+  flex: 4;
+}
+
+.json-viewer__view {
+  flex: 6;
 }
 
 .json-element {
   padding-left: 25px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: consolas, monospace;
+  font-weight: bold;
 }
 
 .json-property > .json-element {
