@@ -1,7 +1,9 @@
 import * as React from 'react'
 
-import { Table } from 'antd'
-import 'antd/dist/antd.css'
+import Table from 'antd/lib/table'
+import 'antd/lib/table/style/css'
+
+import JSONView from './JSONView'
 
 const collectAllKeys = (input: any[]): Set<string> => {
   const keys = new Set<string>()
@@ -17,14 +19,21 @@ interface column {
   title: string
   dataIndex: string
   key: string
-  render?: ((string) => JSX.Element)
+  render?: ((string, object) => JSX.Element)
 }
 
 const generateColumns = (keys: Set<string>): column[] =>
   Array.from(keys).map((key) => ({
     title: key,
     dataIndex: key,
-    key: key
+    key: key,
+    render: (txt, record) => {
+      const val = record[key]
+      if (typeof val === 'object' && val !== null) {
+        return <JSONView ast={txt} />
+      }
+      return <span>{String(val)}</span>
+    }
   }))
 
 const cleanData = (dirtyData: any[]): any[] => dirtyData.filter((datum) => typeof datum === 'object' && datum !== null)

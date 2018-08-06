@@ -13,11 +13,17 @@
   font-family: consolas, monospace;
   border-top: none;
   border-radius: 0;
+  height: 100%;
+  overflow: scroll;
   flex: 4;
+  padding-bottom: 15px;
 }
 
 .json-viewer__view {
   flex: 6;
+  height: 100%;
+  overflow: scroll;
+  padding-bottom: 15px;
 }
 
 .json-element {

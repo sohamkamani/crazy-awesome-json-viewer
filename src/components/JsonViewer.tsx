@@ -10,6 +10,7 @@ import './json-viewer.css'
 
 const sampleJSON = `{
   "title": "JSON viewer",
+  "table view" : [{"a":1, "b":4},{"a":2, "b":1},{"a":5, "b":2}, {"a":1, "b":4, "c": [{"d":5}],
   "sample array":[1,2,3,4],
   "sample object": {
     "embedded array" : ["hey"],
@@ -34,7 +35,9 @@ export default class JsonViewer extends React.Component {
       <div className='json-viewer'>
         <Input.TextArea className='json-viewer__input' value={state.rawInput} onChange={this.onTextChange.bind(this)} />
         <div className='json-viewer__view'>
-          <JSONView ast={formatJSON(state.rawInput)} omitBeginning={false} />
+          <div style={{ paddingBottom: '15px' }}>
+            <JSONView ast={formatJSON(state.rawInput)} omitBeginning={false} />
+          </div>
         </div>
       </div>
     )

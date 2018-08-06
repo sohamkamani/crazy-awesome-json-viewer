@@ -78,6 +78,7 @@ class JSONObject extends React.Component<JSONStructure, JSONStructureState> {
         <TableButton collapsed={collapsed} onClick={() => this.tableView.bind(this)(nodes)} />
       ) : null
     const { op, cl } = brackets(isArray, shouldShowComma ? ',' : '')
+    const keys = Object.keys(nodes)
     return (
       <LevelCtx.Consumer>
         {(level) => (
@@ -88,10 +89,10 @@ class JSONObject extends React.Component<JSONStructure, JSONStructureState> {
             {tableButton}
             {collapsed ? null : <br />}
             <div style={collapsed ? { display: 'none' } : {}}>
-              {Object.keys(nodes).map((key, i) => (
+              {keys.map((key, i) => (
                 <JSONView
                   key={i}
-                  shouldShowComma={i < nodes.length - 1}
+                  shouldShowComma={i < keys.length - 1}
                   objectKey={isArray ? '' : key}
                   ast={nodes[key]}
                   level={level + 1}
