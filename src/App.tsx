@@ -38,7 +38,7 @@ class App extends React.Component<any, AppState> {
             <Sider className='sidebar' width={250}>
               <Options options={this.state.options} onChange={this.handleOptionChange.bind(this)} />
               <footer>
-                <a href='http://github.com/sohamkamani'>Made with ❤️</a>
+                <a href='http://github.com/sohamkamani/crazy-awesome-json-viewer'>Made with ❤️</a>
               </footer>
             </Sider>
             <Layout>

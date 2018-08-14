@@ -100,7 +100,12 @@ class JSONObject extends React.Component<JSONStructure, JSONStructureState> {
               ))}
             </div>
             {cl}
-            <Modal title='Table View' visible={this.state.showTable} onCancel={this.hideTableView.bind(this)}>
+            <Modal
+              footer={null}
+              title='Table View'
+              visible={this.state.showTable}
+              onCancel={this.hideTableView.bind(this)}
+            >
               <Tbl data={this.state.tableData} />
             </Modal>
           </div>
