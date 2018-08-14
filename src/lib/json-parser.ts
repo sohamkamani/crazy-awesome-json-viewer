@@ -1,10 +1,15 @@
-const formatJSON = (txt: string): Object => {
+interface parseResult {
+  ast: object | null
+  e: Error | null
+}
+
+const formatJSON = (txt: string): parseResult => {
   let ast = {}
   try {
     ast = JSON.parse(txt)
-    return ast
+    return { ast, e: null }
   } catch (e) {
-    return e
+    return { ast: null, e }
   }
 }
 

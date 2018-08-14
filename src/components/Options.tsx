@@ -1,6 +1,8 @@
 import * as React from 'react'
 import Radio from 'antd/lib/radio'
+import Checkbox from 'antd/lib/checkbox'
 import 'antd/lib/radio/style/css'
+import 'antd/lib/checkbox/style/css'
 import './options.css'
 
 export enum HighlightModes {
@@ -14,9 +16,10 @@ export enum TextSizes {
   Large = 'large'
 }
 
-export class AppOptions {
+export interface AppOptions {
   highlightMode: HighlightModes
   textSize: TextSizes
+  colorblindMode: boolean
 }
 
 class PropTypes {
@@ -36,6 +39,9 @@ export default class Options extends React.Component<PropTypes> {
   }
   handleTextSizeChange (e) {
     this.props.onChange(Object.assign(this.props.options, { textSize: e.target.value }))
+  }
+  handleColorblindModeChange (e) {
+    this.props.onChange(Object.assign(this.props.options, { colorblindMode: e.target.checked }))
   }
   render () {
     return (
@@ -73,6 +79,15 @@ export default class Options extends React.Component<PropTypes> {
             </Radio.Button>
           </Radio.Group>
         </div>
+
+        <div className='app-option' style={{ flexDirection: 'row' }}>
+          <Label value='Colorblind friendly mode :' />
+          <Checkbox
+            style={{ margin: 'auto' }}
+            checked={this.props.options.colorblindMode}
+            onChange={this.handleColorblindModeChange.bind(this)}
+          />
+        </div>
       </div>
     )
   }
@@ -80,5 +95,6 @@ export default class Options extends React.Component<PropTypes> {
 
 export const defaultOptions: AppOptions = {
   highlightMode: HighlightModes.Default,
-  textSize: TextSizes.Medium
+  textSize: TextSizes.Medium,
+  colorblindMode: false
 }

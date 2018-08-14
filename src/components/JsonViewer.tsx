@@ -10,7 +10,7 @@ import './json-viewer.css'
 
 const sampleJSON = `{
   "title": "JSON viewer",
-  "table view" : [{"a":1, "b":4},{"a":2, "b":1},{"a":5, "b":2}, {"a":1, "b":4, "c": [{"d":5}],
+  "table view" : [{"a":1, "b":4},{"a":2, "b":1},{"a":5, "b":2}, {"a":1, "b":4, "c": [{"d":5}]}],
   "sample array":[1,2,3,4],
   "sample object": {
     "embedded array" : ["hey"],
@@ -22,11 +22,18 @@ const sampleJSON = `{
 export default class JsonViewer extends React.Component {
   public constructor (props) {
     super(props)
-    this.state = { rawInput: sampleJSON }
+    const { ast, e } = formatJSON(sampleJSON)
+    this.state = { rawInput: sampleJSON, ast, e }
   }
 
-  onTextChange (e) {
-    this.setState({ rawInput: e.target.value })
+  onTextChange (event) {
+    const { value } = event.target
+    const { ast, e } = formatJSON(value)
+    if (e) {
+      this.setState({ rawInput: value, e })
+      return
+    }
+    this.setState({ rawInput: value, ast, e: null })
   }
 
   public render () {
@@ -36,7 +43,12 @@ export default class JsonViewer extends React.Component {
         <Input.TextArea className='json-viewer__input' value={state.rawInput} onChange={this.onTextChange.bind(this)} />
         <div className='json-viewer__view'>
           <div style={{ paddingBottom: '15px' }}>
-            <JSONView ast={formatJSON(state.rawInput)} omitBeginning={false} />
+            {state.e ? (
+              <div className='error-message-container'>
+                <pre className='error-message'>{state.e.message}</pre>
+              </div>
+            ) : null}
+            <JSONView ast={state.ast} omitBeginning={false} />
           </div>
         </div>
       </div>

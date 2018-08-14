@@ -30,6 +30,7 @@
   padding-left: 25px;
   font-family: consolas, monospace;
   font-weight: bold;
+  display: inline-block;
 }
 
 .json-property > .json-element {
@@ -39,8 +40,19 @@
 .collapse-button {
   background-repeat: no-repeat;
   background-position: center;
-  margin: 0 8px;
   padding: 0 5px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.collapse-button > svg {
+  height: 10px;
+  fill: #656b78;
+  vertical-align: middle;
+}
+
+.collapse-button:hover > svg {
+  fill: #adb4c3;
 }
 
 .collapse-button::-moz-selection {
@@ -49,4 +61,13 @@
 
 .collapse-button::selection {
   background-color: rgba(0, 0, 0, 0);
+}
+
+.error-message {
+  margin: 0;
+  padding: 0 25px;
+  word-break: break-all;
+  width: 100%;
+  background: rgba(195, 83, 83, 0.545);
+  white-space: normal;
 }
