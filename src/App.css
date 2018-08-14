@@ -1,4 +1,35 @@
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
 h1 {
   text-align: center;
   color: white;
+  font-size: 2.1em;
+}
+
+h1 > span {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.header {
+  background-color: #221d23;
+}
+
+.sidebar {
+  background-color: #221d23;
+  position: relative;
+}
+
+footer {
+  color: white;
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+footer > a {
+  color: white;
+  text-decoration: underline;
 }

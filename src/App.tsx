@@ -30,11 +30,16 @@ class App extends React.Component<any, AppState> {
       <OptionsCtx.Provider value={this.state.options}>
         <Layout className='App'>
           <Header className='header'>
-            <h1>JSON Viewer</h1>
+            <h1>
+              <span>Crazy Awesome</span> JSON Viewer
+            </h1>
           </Header>
           <Layout>
-            <Sider width={250}>
+            <Sider className='sidebar' width={250}>
               <Options options={this.state.options} onChange={this.handleOptionChange.bind(this)} />
+              <footer>
+                <a href='http://github.com/sohamkamani'>Made with ❤️</a>
+              </footer>
             </Sider>
             <Layout>
               <Content>
